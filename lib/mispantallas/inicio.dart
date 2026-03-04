@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/mispantallas/pantalla2.dart';
+import 'package:myapp/mispantallas/pantalla3.dart';
+import 'package:myapp/mispantallas/pantalla4.dart';
 
 class PaginaUno extends StatelessWidget {
   const PaginaUno({super.key});
@@ -11,13 +14,21 @@ class PaginaUno extends StatelessWidget {
         centerTitle: true,
         title: const Column(
           children: [
-            Text('Ver', style: TextStyle(color: Colors.white, fontSize: 18)),
+            Text('Menu', style: TextStyle(color: Color.fromARGB(255, 0, 0, 0), fontSize: 18)),
             Text(
-              'Sucursales',
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal, fontSize: 14),
+              'Principal',
+              style: TextStyle(color: Color.fromARGB(255, 0, 0, 0), fontWeight: FontWeight.normal, fontSize: 14),
             ),
           ],
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.account_circle, color: Color.fromARGB(255, 0, 0, 0), size: 30),
+            onPressed: () {
+              // Acción para el icono de perfil
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Center(
@@ -25,39 +36,45 @@ class PaginaUno extends StatelessWidget {
             children: [
               const SizedBox(height: 20),
               // Tarjeta 1
-              _tarjetaSucursal('Av. Avena', 'https://raw.githubusercontent.com/DominiqueVaquera/Imagenes/main/avena.jpg', Colors.yellow.shade100),
+              _tarjeta(
+                'Ver animales',
+                Colors.yellow.shade100,
+                context,
+                () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const PaginaDos()),
+                  );
+                },
+                imageUrl: 'https://raw.githubusercontent.com/DominiqueVaquera/Imagenes/main/avena.jpg',
+              ),
               const SizedBox(height: 20),
               // Tarjeta 2
-              _tarjetaSucursal('Av. Nueva Zelanda', 'https://raw.githubusercontent.com/DominiqueVaquera/Imagenes/main/pi%C3%B1a.jpg', Colors.blue.shade100),
+              _tarjeta(
+                'Ver sucursales',
+                Colors.blue.shade100,
+                context,
+                () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const PaginaCuatro()),
+                  );
+                },
+              ),
               const SizedBox(height: 20),
               // Tarjeta 3
-              _tarjetaSucursal('Av. Piña', 'https://raw.githubusercontent.com/DominiqueVaquera/Imagenes/main/zelanda.jpg', Colors.pink.shade100),
+              _tarjeta(
+                'Ver cuidadores',
+                Colors.pink.shade100,
+                context,
+                () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const PaginaTres()),
+                  );
+                },
+              ),
               const SizedBox(height: 10),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red.shade200,
-                  minimumSize: const Size(150, 30), // Ancho y alto del botón
-                  shape: const BeveledRectangleBorder(),
-                  foregroundColor: Colors.black, // Color del texto
-                ),
-                onPressed: () {
-                  Navigator.pushNamed(context, '/segunda');
-                },
-                child: const Text('Ir a Pantalla 2'),
-              ),
-              const SizedBox(height: 5),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red.shade200,
-                  minimumSize: const Size(150, 30), // Ancho y alto del botón
-                  shape: const BeveledRectangleBorder(),
-                  foregroundColor: Colors.black, // Color del texto
-                ),
-                onPressed: () {
-                  Navigator.pushNamed(context, '/tercera');
-                },
-                child: const Text('Ir a Pantalla 3'),
-              ),
             ],
           ),
         ),
@@ -66,44 +83,46 @@ class PaginaUno extends StatelessWidget {
   }
 
   // Función simplificada para crear el contenedor rectangular
-  Widget _tarjetaSucursal(String nombre, String url, Color color) {
-    return Container(
-      width: 350,
-      decoration: BoxDecoration(
-        color: color,
-        border: Border.all(color: Colors.black, width: 2), // Borde rectangular recto
-      ),
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Text(
-              nombre,
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+  Widget _tarjeta(String nombre, Color color, BuildContext context, VoidCallback onPressed, {String? imageUrl}) {
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        width: 350,
+        decoration: BoxDecoration(
+          color: color,
+          border: Border.all(color: Colors.black, width: 2), // Borde rectangular recto
+        ),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Text(
+                nombre,
+                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
             ),
-          ),
-          // Línea divisoria de lado a lado
-          const Divider(
-            height: 0,
-            thickness: 2,
-            color: Colors.black,
-          ),
-          // Imagen de internet
-          Image.network(
-            url,
-            width: 350,
-            height: 100,
-            fit: BoxFit.cover, // Correcto: BoxFit
-            // Si la imagen falla, muestra un texto en lugar de un error rojo
-            errorBuilder: (context, error, stackTrace) {
-              return Container(
+            // Línea divisoria de lado a lado
+            const Divider(
+              height: 0,
+              thickness: 2,
+              color: Colors.black,
+            ),
+            if (imageUrl != null)
+              Image.network(
+                imageUrl,
+                width: 350,
                 height: 100,
-                color: Colors.grey[300],
-                child: const Center(child: Text('Error al cargar imagen')),
-              );
-            },
-          ),
-        ],
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    height: 100,
+                    color: Colors.grey[300],
+                    child: const Center(child: Text('Error al cargar imagen')),
+                  );
+                },
+              ),
+          ],
+        ),
       ),
     );
   }
